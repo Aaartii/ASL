@@ -1,0 +1,106 @@
+%long=ncread('0DF3190B977775AEA1DE9BDDD53E192F_ferret_listing.nc','LON173_180');
+%lat=ncread('0DF3190B977775AEA1DE9BDDD53E192F_ferret_listing.nc','LAT180_187');
+temp=ncread('0DF3190B977775AEA1DE9BDDD53E192F_ferret_listing.nc','TEMP');
+%depth=ncread('0DF3190B977775AEA1DE9BDDD53E192F_ferret_listing.nc','LEV1_19');
+
+matrix_3d = squeeze(temp(:,:,1,:));
+
+% Initialize an array to store the averages
+interval = 12;
+num_averages = floor(size(matrix_3d, 3) / interval);
+averages = zeros(1, num_averages);
+
+%initialize array of size 12 to store all month avg
+months12_temp = zeros(1, 12);
+
+
+% Loop through and compute the averages at intervals of 12
+for j = 1:12
+    for i = 1:num_averages
+        matrix_indices = (i - 1) * interval + j;
+        averages(i) = mean(mean(matrix_3d(:,:,matrix_indices)));
+        %slice_average = mean(mean(matrix_3d(:,:,matrix_indices)));
+        %averages(i) = slice_average;
+    end
+    %disp(['Averages of month no ', num2str(j), ' is: ', num2str(averages)]);
+
+    %stores avg of all jans,febs....
+    months12_temp(j) = mean(averages(:));
+    %disp(['Average of the all month no: ', num2str(j), ' is: ', num2str(all_month_average)]);
+end
+
+disp(months12_temp);
+
+
+
+long=ncread('sss.nc','LON173_180');
+lat=ncread('sss.nc','LAT180_187');
+salinity=ncread('sss.nc','SALT');
+depth=ncread('sss.nc','LEV1_19');
+%disp(salinity)
+
+matrix_3d = squeeze(salinity(:,:,1,:));
+
+% Initialize an array to store the averages
+interval = 12;
+num_averages = floor(size(matrix_3d, 3) / interval);
+averages = zeros(1, num_averages);
+
+%initialize array of size 12 to store all month avg
+months12_sal = zeros(1, 12);
+
+
+% Loop through and compute the averages at intervals of 12
+for j = 1:12
+    for i = 1:num_averages
+        matrix_indices = (i - 1) * interval + j;
+        averages(i) = mean(mean(matrix_3d(:,:,matrix_indices)));
+        %slice_average = mean(mean(matrix_3d(:,:,matrix_indices)));
+        %averages(i) = slice_average;
+    end
+    %disp(['Averages of month no ', num2str(j), ' is: ', num2str(averages)]);
+
+    %stores avg of all jans,febs....
+    months12_sal(j) = mean(averages(:));
+    %disp(['Average of the all month no: ', num2str(j), ' is: ', num2str(all_month_average)]);
+end
+
+disp(months12_sal);
+
+% Load your data and calculate months12_temp and months12_sal
+
+% Create a vector for the months (1 to 12)
+months = 1:12;
+
+% Define custom month labels
+monthLabels = {'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'};
+
+% Plot months12_temp in blue
+plot(months, months12_temp, 'b', 'LineWidth', 2);
+hold on;
+
+% Plot months12_sal in red
+plot(months, months12_sal, 'r', 'LineWidth', 2);
+
+% Customize the plot
+title('Monthly Averages of Temperature and Salinity');
+xlabel('Month');
+ylabel('Average Value');
+legend('Temperature', 'Salinity');
+grid on;
+
+% Set custom tick labels for the x-axis
+xticks(months);
+xticklabels(monthLabels);
+
+% Add labels to each data point
+for i = 1:12
+    text(months(i), months12_temp(i), num2str(months12_temp(i)), 'HorizontalAlignment', 'left');
+    text(months(i), months12_sal(i), num2str(months12_sal(i)), 'HorizontalAlignment', 'right');
+end
+
+% Hold off to prevent further changes to the plot
+hold off;
+
+% Hold off to prevent further changes to the plot
+hold off;
