@@ -1,0 +1,137 @@
+%long=ncread('0DF3190B977775AEA1DE9BDDD53E192F_ferret_listing.nc','LON173_180');
+%lat=ncread('0DF3190B977775AEA1DE9BDDD53E192F_ferret_listing.nc','LAT180_187');
+temp=ncread('0DF3190B977775AEA1DE9BDDD53E192F_ferret_listing.nc','TEMP');
+%depth=ncread('0DF3190B977775AEA1DE9BDDD53E192F_ferret_listing.nc','LEV1_19');
+
+matrix_3d = squeeze(temp(:,:,1,:));
+
+% Initialize an array to store the averages
+interval = 12;
+num_averages = floor(size(matrix_3d, 3) / interval);
+averages = zeros(1, num_averages);
+
+%initialize array of size 12 to store all month avg
+months12 = zeros(1, 12);
+
+
+% Loop through and compute the averages at intervals of 12
+for j = 1:12
+    for i = 1:num_averages
+        matrix_indices = (i - 1) * interval + j;
+        averages(i) = mean(mean(matrix_3d(:,:,matrix_indices)));
+        %slice_average = mean(mean(matrix_3d(:,:,matrix_indices)));
+        %averages(i) = slice_average;
+    end
+    %disp(['Averages of month no ', num2str(j), ' is: ', num2str(averages)]);
+
+    %stores avg of all jans,febs....
+    months12(j) = mean(averages(:));
+    %disp(['Average of the all month no: ', num2str(j), ' is: ', num2str(all_month_average)]);
+end
+
+disp(months12);
+
+
+% Plot the monthly average temperatures as points
+figure;
+h = plot(1:12, months12, 'o-', 'MarkerSize', 8, 'LineWidth', 2);
+xlabel('Month');
+ylabel('Average Temperature (\circC)');
+title('Monthly Average Temperature');
+
+% Set x-axis labels to all 12 months
+xticks(1:12);
+xticklabels({'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'});
+
+% Set colormap for the background based on temperature
+cmap = colormap(jet(256)); % Use the jet colormap for a smooth transition from blue to red
+caxis([min(months12), max(months12)]); % Set the color axis to temperature range
+colormap(cmap);
+colorbar;
+
+% Define the colors for the background based on the temperature
+bgColors = interp1(linspace(min(months12), max(months12), 256), cmap, months12, 'linear');
+
+% Customize the appearance of the plot
+grid on;
+set(gca, 'FontName', 'Arial', 'FontSize', 12);
+set(h, 'MarkerFaceColor', 'b', 'MarkerEdgeColor', 'b');
+set(gca, 'XTickLabelRotation', 45);
+ylim([min(months12) - 2, max(months12) + 2]);
+
+% Apply the background color to the figure
+set(gcf, 'color', 'w');
+set(gca, 'color', 'none');
+set(gca, 'XColor', 'k', 'YColor', 'k');
+
+% Optionally, display a data tip when you hover over data points
+% dataTip = datacursormode(gcf);
+% dataTip.UpdateFcn = @(src, event) sprintf('Month: %s\nAverage Temperature: %.2f', xticklabels(event.Target.XData), event.Target.YData);
+long=ncread('sss.nc','LON173_180');
+lat=ncread('sss.nc','LAT180_187');
+salinity=ncread('sss.nc','SALT');
+depth=ncread('sss.nc','LEV1_19');
+%disp(salinity)
+
+matrix_3d = squeeze(salinity(:,:,1,:));
+
+% Initialize an array to store the averages
+interval = 12;
+num_averages = floor(size(matrix_3d, 3) / interval);
+averages = zeros(1, num_averages);
+
+%initialize array of size 12 to store all month avg
+months12 = zeros(1, 12);
+
+
+% Loop through and compute the averages at intervals of 12
+for j = 1:12
+    for i = 1:num_averages
+        matrix_indices = (i - 1) * interval + j;
+        averages(i) = mean(mean(matrix_3d(:,:,matrix_indices)));
+        %slice_average = mean(mean(matrix_3d(:,:,matrix_indices)));
+        %averages(i) = slice_average;
+    end
+    %disp(['Averages of month no ', num2str(j), ' is: ', num2str(averages)]);
+
+    %stores avg of all jans,febs....
+    months12(j) = mean(averages(:));
+    %disp(['Average of the all month no: ', num2str(j), ' is: ', num2str(all_month_average)]);
+end
+
+disp(months12);
+% Plot the monthly average temperatures as points
+figure;
+h = plot(1:12, months12, 'o-', 'MarkerSize', 8, 'LineWidth', 2);
+xlabel('Month');
+ylabel('Average salinity (\circC)');
+title('Monthly Average salinity');
+
+% Set x-axis labels to all 12 months
+xticks(1:12);
+xticklabels({'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'});
+
+% Set colormap for the background based on temperature
+%cmap = colormap(jet(256)); % Use the jet colormap for a smooth transition from blue to red
+%caxis([min(months12), max(months12)]); % Set the color axis to temperature range
+%colormap(cmap);
+%colorbar;
+
+% Define the colors for the background based on the temperature
+%bgColors = interp1(linspace(min(months12), max(months12), 256), cmap, months12, 'linear');
+
+% Customize the appearance of the plot
+grid on;
+set(gca, 'FontName', 'Arial', 'FontSize', 12);
+set(h, 'MarkerFaceColor', 'b', 'MarkerEdgeColor', 'b');
+set(gca, 'XTickLabelRotation', 45);
+ylim([min(months12) - 2, max(months12) + 2]);
+
+% Apply the background color to the figure
+set(gcf, 'color', 'w');
+set(gca, 'color', 'none');
+set(gca, 'XColor', 'k', 'YColor', 'k');
+
+% Optionally, display a data tip when you hover over data points
+% dataTip = datacursormode(gcf);
+% dataTip.UpdateFcn = @(src, event) sprintf('Month: %s\nAverage Temperature: %.2f', xticklabels(event.Target.XData), event.Target.YData);
